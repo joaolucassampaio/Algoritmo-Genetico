@@ -50,7 +50,7 @@ double distEuclideana(struct ponto p1, struct ponto p2) {
 
 // 4° Com o vetor Pontos preenchidos, deverá ser criada uma matriz chamada Dist, 10X10, contendo as distâncias euclideanas entre os pontos.
 void gerarMatrizDist(struct ponto *pontos, int tamanhoMax, double Dist[tamanhoMax][tamanhoMax]) {
-    int eixoY, eixoX;
+    int eixoY, eixoX, i, j;
     
     // Calculando distâncias euclidianas e preenchendo a matriz Dist
     for (eixoY = 0; eixoY < tamanhoMax; eixoY++) {
@@ -61,8 +61,8 @@ void gerarMatrizDist(struct ponto *pontos, int tamanhoMax, double Dist[tamanhoMa
     
     // Imprime a matriz de distâncias euclidianas
     printf("Matriz de Distâncias Euclidianas:\n");
-    for (int i = 0; i < tamanhoMax; i++) {
-        for (int j = 0; j < tamanhoMax; j++) {
+    for (i = 0; i < tamanhoMax; i++) {
+        for (j = 0; j < tamanhoMax; j++) {
             printf("%.2f\t", Dist[i][j]);  // Imprime cada elemento da matriz
         }
         printf("\n");
@@ -76,10 +76,13 @@ void gerarNumerosUnicos(int vetor[], int tamanho) {
     bool numeros_usados[10] = { false };  // Vetor de flags para controlar números usados
     int i, index;
 
+    // Gera um vetor de 10 elementos que contém números únicos de 0 a 9
     for (i = 0; i < tamanho; i++) {
         do {
             index = rand() % 10;  // Gera um índice aleatório entre 0 e 9
         } while (numeros_usados[index]);  // Verifica se o número já foi usado, repetindo se necessário
+        //Se é um número que ainda não foi usado, sai do laço "do while"
+        //Se é um número que já foi utilizado, continua no laço "do while"
 
         vetor[i] = index;  // Atribui o número ao vetor
         numeros_usados[index] = true;  // Marca o número como usado
@@ -90,8 +93,9 @@ void gerarNumerosUnicos(int vetor[], int tamanho) {
 // Função para calcular o valor acumulado das distâncias euclidianas de uma rota especificada pelo vetor indivíduo
 double gerarSomaValor(int vetor[], int tamanho, double Dist[][10]) {
     double soma = 0;
-    
-    for (int i = 0; i < tamanho - 1; i++) {
+
+    int i;
+    for (i = 0; i < tamanho - 1; i++) {
         int primeiroPonto = vetor[i];
         int segundoPonto = vetor[i + 1];
         soma += Dist[primeiroPonto][segundoPonto];
@@ -131,7 +135,9 @@ void gerarVetorPop(double Dist[][10]) {
     int tamanhoVetorPop = 100;  // Tamanho do vetor população
     struct pop *populacao = malloc(tamanhoVetorPop * sizeof(struct pop));  // Aloca espaço na memória para o vetor população
     
-    for (int i = 0; i < tamanhoVetorPop; i++) {
+    // Gerar os campos indiv e valor para cada elemento do vetor população 
+    int i;
+    for (i = 0; i < tamanhoVetorPop; i++) {
         gerarNumerosUnicos(populacao[i].indiv, 10);  // Chama a função para gerar indivíduos com valores únicos
         populacao[i].valor = gerarSomaValor(populacao[i].indiv, 10, Dist);  // Chama a função para calcular o valor acumulado da rota para cada indivíduo
     }
