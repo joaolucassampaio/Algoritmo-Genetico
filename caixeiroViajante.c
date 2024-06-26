@@ -33,7 +33,8 @@ struct ponto *gerarVetorPontos(int tamanhoMax) {
     //3° O valor de Id deverá coincidir com a posição no vetor e os valores de PX e PY deverão ser preenchidos randomicamente
    //O for abaixo seleciona o elemento(0 a 9) do vetor pelo i e gera valores de id, Px e py para cada um.
     for (int i = 0; i < tamanhoMax; i++) { // popula o vetor
-        pontos[i].id = i; // O valor de Id deverá coincidir com a posição no vetor.
+   //pontos[i] seleciona o elemento do vetor
+        pontos[i].id = i; //seleciona o elemento i no vetor pontos e atribui um id igual a i
         pontos[i].px = gerarDouble(); // Chama a função gerarDouble e gera o valor aleatório da coordenada no eixo x
         pontos[i].py = gerarDouble(); // Chama a função gerarDouble e gera o valor aleatório da coordenada no eixo y
     }
