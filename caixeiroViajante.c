@@ -32,7 +32,8 @@ struct ponto *gerarVetorPontos(int tamanhoMax) {
     
     //3° O valor de Id deverá coincidir com a posição no vetor e os valores de PX e PY deverão ser preenchidos randomicamente
    //O for abaixo seleciona o elemento(0 a 9) do vetor pelo i e gera valores de id, Px e py para cada um.
-    for (int i = 0; i < tamanhoMax; i++) { // popula o vetor
+	int i;
+    for (i = 0; i < tamanhoMax; i++) { // popula o vetor
    	//pontos[i] seleciona o elemento do vetor
         pontos[i].id = i; //seleciona o elemento i no vetor pontos e atribui um id igual a i
         pontos[i].px = gerarDouble(); // Chama a função gerarDouble e gera o valor aleatório da coordenada no eixo x
@@ -51,18 +52,20 @@ double distEuclideana(struct ponto p1, struct ponto p2) {
 
 //4° Com o vetor Pontos preenchidos, deverá ser criada uma matriz chamada Dist, 10X10, contendo as distâncias euclideanas entre os pontos
 void gerarMatrizDist(struct ponto *pontos, int tamanhoMax, double Dist[tamanhoMax][tamanhoMax]) {
+	int eixoY, eixoX;
     // Calculando distâncias euclidianas e preenchendo a matriz Dist
 	// Constrói a linha primeiro (eixoY) e itera 10 vezes para construir as colunas (eixoX)
-    for (int eixoY = 0; eixoY < tamanhoMax; eixoY++) {
-        for (int eixoX = 0; eixoX < tamanhoMax; eixoX++) {
+    for (eixoY = 0; eixoY < tamanhoMax; eixoY++) {
+        for (eixoX = 0; eixoX < tamanhoMax; eixoX++) {
             Dist[eixoY][eixoX] = distEuclideana(pontos[eixoY], pontos[eixoX]); // Cada campo da matriz recebe o valor da distância euclidiana entre os dois pontos calculados
         }
     }
 
 // Imprime a matriz de distâncias euclidianas
     printf("Matriz de Distâncias Euclidianas:\n");
-    for (int i = 0; i < tamanhoMax; i++) {
-        for (int j = 0; j < tamanhoMax; j++) {
+	int i, j;
+    for (i = 0; i < tamanhoMax; i++) {
+        for (j = 0; j < tamanhoMax; j++) {
             printf("%.2f\t", Dist[i][j]); // Imprime cada elemento da matriz
         }
         printf("\n");
