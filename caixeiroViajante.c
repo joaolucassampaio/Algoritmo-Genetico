@@ -60,7 +60,7 @@ void gerarMatrizDist(struct ponto *pontos, int tamanhoMax, double Dist[tamanhoMa
     }
     
     // Imprime a matriz de distâncias euclidianas
-    printf("Matriz de Distâncias Euclidianas:\n");
+    printf("Matriz de Distancias Euclidianas:\n");
     for (i = 0; i < tamanhoMax; i++) {
         for (j = 0; j < tamanhoMax; j++) {
             printf("%.2f\t", Dist[i][j]);  // Imprime cada elemento da matriz
@@ -108,10 +108,11 @@ double gerarSomaValor(int vetor[], int tamanho, double Dist[][10]) {
 
 // Função para imprimir a população ordenada
 void imprimirPopulacao(struct pop *populacao, int tamanho) {
-    printf("Vetor População Ordenado:\n");
-    for (int i = 0; i < tamanho; i++) {
+    printf("Vetor Populacao Ordenado:\n");
+    int i, j;
+    for (i = 0; i < tamanho; i++) {
         printf("%d: Indiv: ", i);
-        for (int j = 0; j < 10; j++) {
+        for (j = 0; j < 10; j++) {
             printf("%d ", populacao[i].indiv[j]);
         }
         printf("Valor acumulado: %.2f\n", populacao[i].valor);
