@@ -1,158 +1,153 @@
-#include <stdio.h> //biblioteca que fornece funções para entrada e saída de dados (por ex: printf e scanf)
-#include <stdlib.h> //biblioteca que fornece funções básicas em C (alocação de memória, conversões de strings)
-#include <time.h> //biblioteca para inicializar a semente do gerador de números aleatórios  
-#include <math.h> //biblioteca que fornece funções matemáticas (por ex: raíz quadrada "sqrt")
-#include <stdbool.h> //biblioteca que define o tipo de dados bool
+#include <stdio.h> // Biblioteca que fornece funções para entrada e saída de dados (ex: printf e scanf)
+#include <stdlib.h> // Biblioteca que fornece funções básicas em C (alocação de memória, conversões de strings)
+#include <time.h> // Biblioteca para inicializar a semente do gerador de números aleatórios
+#include <math.h> // Biblioteca que fornece funções matemáticas (ex: raiz quadrada "sqrt")
+#include <stdbool.h> // Biblioteca que define o tipo de dado bool
 
-//1° A estrutura deste registro é composta pelos campos: Id (inteiro identificador do ponto), PX e PY (reais que representam a latitude e longitude dos pontos.
-//DEFINIÇÃO DO REGISTRO PARA O VETOR PONTOS
+// Estrutura para representar um ponto com um identificador (id), uma coordenada x (px) e uma coordenada y (py)
 struct ponto {
-	int id; //identificador dos pontos
-	double px; //longitude dos pontos
-	double py; //latitude dos pontos
+    int id; // Identificador dos pontos
+    double px; // Longitude dos pontos
+    double py; // Latitude dos pontos
 };
 
-//5° A estrutura deste registro é composta pelos campos: Individuo (vetor de 10 elementos inteiros) e Valor (real para acumular custo da rota)
-//DEFINIÇÃO DA ESTRUTURA PARA O VETOR POPULACAO
+// Estrutura para representar um indivíduo na população, com um valor acumulado (valor) e um vetor de 10 elementos inteiros (indiv)
 struct pop {
-	double valor; //valor acumulado do custa da rota
-	int indiv[10]; //definição do vetor indivíduo de 10 elementos inteiros
+    double valor; // Valor acumulado do custo da rota
+    int indiv[10]; // Definição do vetor indivíduo de 10 elementos inteiros
 };
 
-//função para gerar número aleatório double
+// Função para gerar um número aleatório do tipo double entre 0 e 360
 double gerarDouble() {
-    return ((double)rand() / RAND_MAX) * 360.0; //de 0 à 360
+    return ((double)rand() / RAND_MAX) * 360.0; // Retorna um número aleatório do tipo double entre 0 e 360
 }
 
-//2° Construir um vetor chamado Pontos com 10 elementos do tipo registro.
-//FUNÇÃO PARA GERAR O VETOR PONTOS
+// Função para gerar um vetor de pontos com tamanho especificado
 struct ponto *gerarVetorPontos(int tamanhoMax) {
-    srand(time(NULL)); //Inicializa o gerador de números aleatórios
-    struct ponto *pontos = malloc(tamanhoMax * sizeof(struct ponto)); // aloca espaco na memoria para um vetor do tipo registro de 10 elementos
-    
-    //3° O valor de Id deverá coincidir com a posição no vetor e os valores de PX e PY deverão ser preenchidos randomicamente
-   //O for abaixo seleciona o elemento(0 a 9) do vetor pelo i e gera valores de id, Px e py para cada um.
-    for (int i = 0; i < tamanhoMax; i++) { // popula o vetor
-   //pontos[i] seleciona o elemento do vetor
-        pontos[i].id = i; //seleciona o elemento i no vetor pontos e atribui um id igual a i
-        pontos[i].px = gerarDouble(); // Chama a função gerarDouble e gera o valor aleatório da coordenada no eixo x
-        pontos[i].py = gerarDouble(); // Chama a função gerarDouble e gera o valor aleatório da coordenada no eixo y
+    srand(time(NULL)); // Inicializa o gerador de números aleatórios com a semente baseada no tempo atual
+    struct ponto *pontos = malloc(tamanhoMax * sizeof(struct ponto)); // Aloca espaço na memória para um vetor de pontos
+
+    // Popula o vetor de pontos
+    for (int i = 0; i < tamanhoMax; i++) {
+        pontos[i].id = i; // Define o identificador do ponto como o índice i
+        pontos[i].px = gerarDouble(); // Gera um valor aleatório para a coordenada x (longitude)
+        pontos[i].py = gerarDouble(); // Gera um valor aleatório para a coordenada y (latitude)
     }
-    
-    return pontos; // retorna o vetor de pontos gerado
+
+    return pontos; // Retorna o vetor de pontos gerado
 }
 
-//função para calcular a distância euclideana
+// Função para calcular a distância euclidiana entre dois pontos
 double distEuclideana(struct ponto p1, struct ponto p2) {
-	double dx = p1.px - p2.px; // operação entre um grupo de pontos. (Pxa-Pxb)²
-	double dy = p1.py - p2.py; // msm coisa aqui... (Pya-Pyb)²
-	return sqrt(dx * dx + dy * dy); // (Pxa-Pxb)²+(Pya-Pyb)²
+    double dx = p1.px - p2.px; // Calcula a diferença entre as coordenadas x dos pontos
+    double dy = p1.py - p2.py; // Calcula a diferença entre as coordenadas y dos pontos
+    return sqrt(dx * dx + dy * dy); // Retorna a raiz quadrada da soma dos quadrados das diferenças (distância euclidiana)
 }
 
-//4° Com o vetor Pontos preenchidos, deverá ser criada uma matriz chamada Dist, 10X10, contendo as distâncias euclideanas entre os pontos
+// Função para gerar a matriz de distâncias euclidianas entre os pontos
 void gerarMatrizDist(struct ponto *pontos, int tamanhoMax, double Dist[tamanhoMax][tamanhoMax]) {
-    // Calculando distâncias euclidianas e preenchendo a matriz Dist
+    // Calcula distâncias euclidianas e preenche a matriz Dist
     for (int eixoY = 0; eixoY < tamanhoMax; eixoY++) {
         for (int eixoX = 0; eixoX < tamanhoMax; eixoX++) {
-            Dist[eixoY][eixoX] = distEuclideana(pontos[eixoY], pontos[eixoX]);
-            //Itera no eixo X 10 vezes.
-            //Quando termina iteração, volta para o for de cima e itera ele ( no caso seria o eixo y).
+            Dist[eixoY][eixoX] = distEuclideana(pontos[eixoY], pontos[eixoX]); // Calcula a distância entre os pontos eixoY e eixoX
         }
     }
-	
+
+    // Imprime a matriz de distâncias euclidianas
     printf("Matriz de Distâncias Euclidianas:\n");
     for (int i = 0; i < tamanhoMax; i++) {
         for (int j = 0; j < tamanhoMax; j++) {
-            printf("%.2f\t", Dist[i][j]);
+            printf("%.2f\t", Dist[i][j]); // Imprime cada elemento da matriz
         }
-        printf("\n");
+        printf("\n"); // Quebra de linha após cada linha da matriz
     } 
-    printf("\n");
+    printf("\n"); // Quebra de linha adicional para separar a matriz da próxima saída
 }
 
-//7° Os vetores indivíduos deverão ser preenchidos com valores de 1 a 10 sem repetição
+// Função para gerar números únicos em um vetor de tamanho especificado
 void gerarNumerosUnicos(int vetor[], int tamanho) {
-    bool numeros_usados[10] = {false}; // Vetor de flags para controlar números usados
-    int i, index;
+    bool numeros_usados[10] = {false}; // Vetor de flags para controlar números já usados
+    int i, index; // Declaração das variáveis de controle
 
     for (i = 0; i < tamanho; i++) {
         do {
             index = rand() % 10; // Gera um índice aleatório entre 0 e 9
-        } while (numeros_usados[index]); // Verifica se o número já foi usado
+        } while (numeros_usados[index]); // Verifica se o número já foi usado, repetindo se necessário
 
         vetor[i] = index; // Atribui o número ao vetor
         numeros_usados[index] = true; // Marca o número como usado
     }
 }
 
-//8° O campo valor será o somatório das distâncias euclidianas entre estes pontos (já calculadas na matriz Dist)
-double gerarSomaValor(int vetor[], int tamanho, double Dist[][10]){
-	double soma = 0;
-	int i;
+// Função para calcular o valor acumulado das distâncias euclidianas de uma rota especificada por um vetor
+double gerarSomaValor(int vetor[], int tamanho, double Dist[][10]) {
+    double soma = 0; // Inicializa a soma das distâncias com zero
+    int i; // Declaração da variável de controle
 
     for (i = 0; i < tamanho - 1; i++) {
-        int primeiroPonto = vetor[i];
-        int segundoPonto = vetor[i + 1];
-        soma += Dist[primeiroPonto][segundoPonto];
+        int primeiroPonto = vetor[i]; // Primeiro ponto da rota
+        int segundoPonto = vetor[i + 1]; // Segundo ponto da rota
+        soma += Dist[primeiroPonto][segundoPonto]; // Adiciona a distância entre os pontos consecutivos
     }
-    // Adiciona a distância do último para o primeiro ponto para fechar o ciclo
+    // Adiciona a distância do último ponto para o primeiro para fechar o ciclo
     soma += Dist[vetor[tamanho - 1]][vetor[0]];
-    
-    return soma;
+
+    return soma; // Retorna o valor acumulado das distâncias
 }
 
+// Função para imprimir a população ordenada
 void imprimirPopulacao(struct pop *populacao, int tamanho) {
-    printf("Vetor População Ordenado:\n");
+    printf("Vetor População Ordenado:\n"); // Imprime o cabeçalho
     for (int i = 0; i < tamanho; i++) {
-        printf("%d: Indiv: ", i);
+        printf("%d: Indiv: ", i); // Imprime o índice do indivíduo
         for (int j = 0; j < 10; j++) {
-            printf("%d ", populacao[i].indiv[j]);
+            printf("%d ", populacao[i].indiv[j]); // Imprime cada valor do vetor indivíduo
         }
-        printf("Valor acumulado: %.2f\n", populacao[i].valor);
+        printf("Valor acumulado: %.2f\n", populacao[i].valor); // Imprime o valor acumulado da rota
     }
 }
 
-//9° Após ser preenchido e calculado, o vetor população deverá ser ordenado pelo campo valor.
-// Função de comparação para qsort
+// Função de comparação para qsort, usada para ordenar a população pelo campo valor
 int compararPopulacao(const void *a, const void *b) {
-    const struct pop *pop1 = (const struct pop *)a;
-    const struct pop *pop2 = (const struct pop *)b;
-    
-    if (pop1->valor < pop2->valor) return -1;
-    else if (pop1->valor > pop2->valor) return 1;
-    else return 0;
+    const struct pop *pop1 = (const struct pop *)a; // Casting para a estrutura pop
+    const struct pop *pop2 = (const struct pop *)b; // Casting para a estrutura pop
+
+    // Compara os valores acumulados das rotas
+    if (pop1->valor < pop2->valor) return -1; // Retorna -1 se o valor de pop1 é menor que pop2
+    else if (pop1->valor > pop2->valor) return 1; // Retorna 1 se o valor de pop1 é maior que pop2
+    else return 0; // Retorna 0 se os valores são iguais
 }
 
-//6° Após calcular a matriz, construir um vetor chamado População com 100 elementos do tipo registro. 
-// Função para gerar vetor de população com indivíduos únicos
+// Função para gerar o vetor de população com indivíduos únicos e calcular seus valores
 void gerarVetorPop(double Dist[][10]) {
-    int tamanhoVetorPop = 100;
-    struct pop *populacao = malloc(tamanhoVetorPop * sizeof(struct pop));
-    int i;
-    
+    int tamanhoVetorPop = 100; // Tamanho do vetor população
+    struct pop *populacao = malloc(tamanhoVetorPop * sizeof(struct pop)); // Aloca espaço na memória para o vetor população
+    int i; // Declaração da variável de controle
+
     for (i = 0; i < tamanhoVetorPop; i++) {
-        gerarNumerosUnicos(populacao[i].indiv, 10);
-        populacao[i].valor = gerarSomaValor(populacao[i].indiv, 10, Dist);
-	}
-    
-    // Ordenar o vetor populacao pelo campo valor usando qsort
+        gerarNumerosUnicos(populacao[i].indiv, 10); // Gera indivíduos com valores únicos
+        populacao[i].valor = gerarSomaValor(populacao[i].indiv, 10, Dist); // Calcula o valor acumulado da rota para cada indivíduo
+    }
+
+    // Ordena o vetor população pelo campo valor usando qsort
     qsort(populacao, tamanhoVetorPop, sizeof(struct pop), compararPopulacao);
-    
-    // Imprimir o vetor populacao ordenado
+
+    // Imprime o vetor população ordenado
     imprimirPopulacao(populacao, tamanhoVetorPop);
-    
-    free(populacao);
+
+    free(populacao); // Libera a memória alocada para a população
 }
 
-int main(){
-	int tamanhoMax = 10;
-	double Dist[tamanhoMax][tamanhoMax]; // matriz de distâncias
-	
-    struct ponto *pontos = gerarVetorPontos(tamanhoMax);
+// Função principal que executa o programa
+int main() {
+    int tamanhoMax = 10; // Define o tamanho máximo do vetor de pontos
+    double Dist[tamanhoMax][tamanhoMax]; // Declara a matriz de distâncias
 
-    gerarMatrizDist(pontos, tamanhoMax, Dist);
-    
-    gerarVetorPop(Dist);
-    
-    free(pontos);
+    struct ponto *pontos = gerarVetorPontos(tamanhoMax); // Gera o vetor de pontos
+
+    gerarMatrizDist(pontos, tamanhoMax, Dist); // Gera a matriz de distâncias euclidianas
+
+    gerarVetorPop(Dist); // Gera o vetor de população com base na matriz de distâncias
+
+    free(pontos); // Libera a memória alocada para o vetor de pontos
 }
