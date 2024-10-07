@@ -88,7 +88,7 @@ double gerarSomaValor(int vetor[], int tamanho, double Dist[][10]) {
 
 int roleta(double custoTotal, struct pop *populacao){
 	double randomico = ((double)rand() / RAND_MAX) * custoTotal;
-	printf("Custo total: %.2f\n", randomico);
+	printf("Valor randomico escolhido: %.2f\n", randomico);
 	
 	double somaCusto = 0.00;
 	int posicao;
@@ -105,8 +105,8 @@ int roleta(double custoTotal, struct pop *populacao){
 }
 
 // Imprime a população ordenada
-double imprimirPopulacao(struct pop *populacao, int tamanho) {
-	double custoTotal = 0;
+void imprimirPopulacao(struct pop *populacao, int tamanho) {
+	//double custoTotal = 0;
     printf("Vetor Populacao Ordenado:\n");
     for (int i = 0; i < tamanho; i++) {
         printf("Indiv %d: ", i);
@@ -114,11 +114,11 @@ double imprimirPopulacao(struct pop *populacao, int tamanho) {
             printf("%d ", populacao[i].indiv[j]);
         }
         printf("Valor acumulado: %.2f\n", populacao[i].valor);
-        custoTotal += populacao[i].valor;
+        //custoTotal += populacao[i].valor;
     }
-    printf("Custo total: %.2f\n", custoTotal);
+    //printf("Custo total: %.2f\n", custoTotal);
     //roleta(custoTotal, populacao);
-    return custoTotal;
+    //return custoTotal;
 }
 
 // Função de comparação para qsort
@@ -132,8 +132,7 @@ int compararPopulacao(const void *a, const void *b) {
 }
 
 // Gera o vetor população
-void gerarVetorPop(double Dist[][10]) {
-    int tamanhoVetorPop = 100;
+struct pop *gerarVetorPop(double Dist[][10], int tamanhoVetorPop) {
     struct pop *populacao = malloc(tamanhoVetorPop * sizeof(struct pop));
     
     for (int i = 0; i < tamanhoVetorPop; i++) {
@@ -141,27 +140,64 @@ void gerarVetorPop(double Dist[][10]) {
         populacao[i].valor = gerarSomaValor(populacao[i].indiv, 10, Dist);
     }
     
-    qsort(populacao, tamanhoVetorPop, sizeof(struct pop), compararPopulacao);
+    //qsort(populacao, tamanhoVetorPop, sizeof(struct pop), compararPopulacao);
     
-    double custoTotal = imprimirPopulacao(populacao, tamanhoVetorPop);
+    //double custoTotal = imprimirPopulacao(populacao, tamanhoVetorPop);
     
-    int posInvertida = roleta(custoTotal, populacao);
+    //int posInvertida = roleta(custoTotal, populacao);
     
-    printf("A posicao invertida e: %d", posInvertida);
+    //printf("A posicao invertida e: %d", posInvertida);
     
-    free(populacao);
+    return populacao;
+}
+
+
+
+void novasGeracoes(){
+	int A;
+	int B;
+	
+	for(int i = 1; i < 100; i++){
+		//Calcula o custo total
+		custoTotal(populacao, tamanhoVetorPop);
+		
+		for(int j = 1; j < 40; j++){
+			A = roleta();
+			B = roleta();
+			//fazer a funcao cruzamento com PathRelinking
+		}
+	}
+}
+
+//Receber como parâmetro o vetor população ordenado
+//Percorrer o vetor população somando o custo
+double custoTotal(struct pop *populacao, int tamanho){
+	double custoTotal = 0;
+    for (int i = 0; i < tamanho; i++) {
+        custoTotal += populacao[i].valor;
+    }
+    printf("Custo total: %.2f\n", custoTotal);
+    return custoTotal;
 }
 
 int main() {
 	srand(time(NULL));
     int tamanhoMax = 10;
+    int tamanhoVetorPop = 100;
     double Dist[tamanhoMax][tamanhoMax];
     
     struct ponto *pontos = gerarVetorPontos(tamanhoMax);
     
     gerarMatrizDist(pontos, tamanhoMax, Dist);
     
-    gerarVetorPop(Dist);
+    //População de 100 indiv criada
+    struct pop *populacao = gerarVetorPop(Dist, tamanhoVetorPop);
+    
+    //População de 100 indiv ordenada do menor para o maior custo
+    qsort(populacao, 100, sizeof(struct pop), compararPopulacao);
+    
+    //Imprime a população ordenada
+    imprimirPopulacao(populacao, tamanhoVetorPop);
     
     free(pontos);
 }
